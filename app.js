@@ -20,7 +20,7 @@ function normalSort(arr, index) {
     return arr[index] > arr[index+1];
 }
 
-async function* bubbleSort(arr) {
+function* bubbleSort(arr) {
     let index;
     let swaps;
     let counter = 0;
@@ -30,8 +30,10 @@ async function* bubbleSort(arr) {
         counter++;
         while(index < arr.length-1*counter) {
             if(dataSizeSort(arr, index)) {
+                arrElements[index+1].lastChild.setAttribute('style', 'fill: green');
+                arrElements[index].lastChild.setAttribute('style', 'fill: green');
                 console.log('waiting fo swap!')
-                await swap(arr, index);
+                swap(arr, index);
                 console.log('after swap')
                 swaps++;
             };
@@ -49,25 +51,16 @@ function visualizeSwap(arr, index) {
     const temp = arr[index].getAttribute('transform');
     arr[index].setAttribute('transform', arr[index+1].getAttribute('transform'));
     arr[index+1].setAttribute('transform', temp);
-
-    // if(arr[index-2]) {
-    //     arr[index-1].lastChild.setAttribute('style', 'fill: orchid');
-    //     arr[index-2].lastChild.setAttribute('style', 'fill: orchid');
-    // };
 };
 
 function swap(arr, index) {
             visualizeSwap(arr, index);
-            
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    const temp = arr[index];
-                    arr[index] = arr[index+1];
-                    arr[index+1] = temp;
-                    console.log('swap!')
-                    resolve();
-                }, delay)
-            })
+            const temp = arr[index];
+            arr[index] = arr[index+1];
+            arr[index+1] = temp;
+            console.log('swap!')
+                
+
                
 }
 
@@ -77,12 +70,10 @@ function renderSortStep(id, swap) {
     if(prev) {
         prev.lastChild.setAttribute('style', 'fill: orchid');
     };
-    arrElements[id+1].lastChild.setAttribute('style', 'fill: red');
-    arrElements[id].lastChild.setAttribute('style', 'fill: red');
-    // if(swap>0) {
-    //     arrElements[id+1].lastChild.setAttribute('style', 'fill: green');
-    //     arrElements[id].lastChild.setAttribute('style', 'fill: green');
-    // }
+    
+        arrElements[id+1].lastChild.setAttribute('style', 'fill: red');
+        arrElements[id].lastChild.setAttribute('style', 'fill: red');
+    
     
 }
 
@@ -96,7 +87,9 @@ const delay = 600;
 bubble = bubbleSort(arrElements);
 const interval = setInterval( ()=>{
     new Promise((resolve, reject)=>{
+        setTimeout(()=>{
             resolve(bubble.next())
+        }, delay*0.7)
     })
     .then((data)=>{
         const {value, done} = data;
