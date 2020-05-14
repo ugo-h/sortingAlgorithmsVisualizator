@@ -105,12 +105,12 @@ function renderSortStep(id, swap) {
     
     if(prev) {
         prev.lastChild.setAttribute('style', 'fill: orchid');
-    }
-    if(swap<=0) {
+    };
+    if(swap <= 0) {
         arrElements[id-1].lastChild.setAttribute('style', 'fill: green');
         el.lastChild.setAttribute('style', 'fill: green');
-        return
-    }
+        return;
+    };
     
     arrElements[id-1].lastChild.setAttribute('style', 'fill: red');
     el.lastChild.setAttribute('style', 'fill: red');
