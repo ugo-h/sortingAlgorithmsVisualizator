@@ -63,16 +63,15 @@ function* bubbleSort(arr) {
         swaps = 0;
         index = 0;
         while(index < arr.length-1) {
-            yield [index+1, swaps];
             if(arr[index] > arr[index+1]) {
-                // visualizeSwap(id);
+                visualizeSwap(index);
                 const temp = arr[index];
                 arr[index] = arr[index+1];
                 arr[index+1] = temp;
                 swaps++;
                
             }
-            
+            yield [index+1, swaps];
         index++;
         } 
         if (swaps <=0 ) {
@@ -95,6 +94,8 @@ function visualizeSwap(id) {
     arrElements[id] = arrElements[id+1];
     arrElements[id+1] = newTemp;
 
+    
+    // next.lastChild.setAttribute('style', 'fill: blue')
 }
 
 
@@ -111,17 +112,9 @@ function renderSortStep(id, swap) {
         el.lastChild.setAttribute('style', 'fill: green');
         return
     }
-    
     arrElements[id-1].lastChild.setAttribute('style', 'fill: red');
     el.lastChild.setAttribute('style', 'fill: red');
     
-    const temp = arrElements[id-1].getAttribute('transform');
-    arrElements[id-1].setAttribute('transform', arrElements[id].getAttribute('transform'));
-    arrElements[id].setAttribute('transform', temp);
-
-    const newTemp = arrElements[id-1];
-    arrElements[id-1] = arrElements[id];
-    arrElements[id] = newTemp;
 }
 
 const arr1 = [2, 10, 7, 3, 1, 6, 20, 12, 13, 11, 5];
