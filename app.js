@@ -47,14 +47,21 @@ function renderArr(arr) {
     root.innerHTML = '';
     arr.forEach((size, index) => {
         const element = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-        element.setAttribute('transform',`translate(${index+ index*20}, 20)`)
+        element.setAttribute('transform',`translate(${index+ index*20}, 20)`);
+        element.dataset.size = size;
         element.innerHTML = `<rect height="${size * 10}" width="${20}" style="fill: ${color}"></rect>`
         root.append(element);
         
     })
      
 }
+function dataSizeSort(arr, index) {
+    return parseInt(arr[index].dataset.size) > parseInt(arr[index+1].dataset.size);
+}
 
+function normalSort(arr, index) {
+    return arr[index] > arr[index+1];
+}
 
 function* bubbleSort(arr) {
     let index;
@@ -63,46 +70,36 @@ function* bubbleSort(arr) {
         swaps = 0;
         index = 0;
         while(index < arr.length-1) {
-            yield [index+1, swaps];
-            if(arr[index] > arr[index+1]) {
-                // visualizeSwap(id);
-                const temp = arr[index];
-                arr[index] = arr[index+1];
-                arr[index+1] = temp;
+            if(dataSizeSort(arr, index)) {
+                swap(arr, index);
                 swaps++;
-               
-            }
-            
-        index++;
-        } 
+            };
+            index++;
+            yield [index, swaps];
+        }; 
         if (swaps <=0 ) {
             return arr
-        }
-    }
+        };
+    };
+};
+
+function visualizeSwap(arr, index) {
+    const temp = arr[index].getAttribute('transform');
+    arr[index].setAttribute('transform', arr[index+1].getAttribute('transform'));
+    arr[index+1].setAttribute('transform', temp);
+};
+
+function swap(arr, index) {
+    visualizeSwap(arr, index);
+    const temp = arr[index];
+    arr[index] = arr[index+1];
+    arr[index+1] = temp;
 }
-function visualizeSwap(id) {
-    arrElements.forEach((el)=>{
-        el.lastChild.setAttribute('style', 'fill: orchid');
-    })
-    const current = arrElements[id];
-    const next = arrElements[id+1];
-    const temp = current.getAttribute('transform');
-
-    current.setAttribute('transform', next.getAttribute('transform'));
-    next.setAttribute('transform', temp);
-
-    const newTemp = arrElements[id];
-    arrElements[id] = arrElements[id+1];
-    arrElements[id+1] = newTemp;
-
-}
-
 
 function renderSortStep(id, swap) {
-
     const el = arrElements[id];
     const prev = arrElements[id-2]
-    
+    console.log(swap)
     if(prev) {
         prev.lastChild.setAttribute('style', 'fill: orchid');
     };
@@ -111,17 +108,8 @@ function renderSortStep(id, swap) {
         el.lastChild.setAttribute('style', 'fill: green');
         return;
     };
-    
     arrElements[id-1].lastChild.setAttribute('style', 'fill: red');
     el.lastChild.setAttribute('style', 'fill: red');
-    
-    const temp = arrElements[id-1].getAttribute('transform');
-    arrElements[id-1].setAttribute('transform', arrElements[id].getAttribute('transform'));
-    arrElements[id].setAttribute('transform', temp);
-
-    const newTemp = arrElements[id-1];
-    arrElements[id-1] = arrElements[id];
-    arrElements[id] = newTemp;
 }
 
 const arr1 = [2, 10, 7, 3, 1, 6, 20, 12, 13, 11, 5];
@@ -129,7 +117,8 @@ renderArr(arr1);
 
 let arrElements = [...document.querySelectorAll('g')];
 
-bubble = bubbleSort(arr1);
+
+bubble = bubbleSort(arrElements);
 const delay = setInterval(()=>{
     const {value, done} = bubble.next();
     console.log(done)
