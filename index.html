@@ -4,18 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="arrayRender.js" defer></script>
-    <script src="bubbleSort.js" defer></script>
-    <script src="app.js" defer></script>
+    <link rel="stylesheet" href="assets/styles/styles.css">
+    <script src="/assets/scripts/app.js" defer type="module"></script>
 </head>
 <body>
+    <div class="backdrop removed"></div>
+    <div class="slider-menu hidden">
+        <h2>Select a sorting algorithm</h2>
+        <ul class="slider-menu__content">
+            <li class="slider-menu__element" id="bubble">Bubble Sort</li>
+            <li class="slider-menu__element" id="selection">Selection Sort</li>
+            <li class="slider-menu__element">Insert Sort</li>
+            <li class="slider-menu__element">Merge Sort</li>
+        </ul>
+    </div>
     <header>
         <label for="size">size</label>
-        <input type="range" min="10" max="100" id="array-size-range">
+        <input type="range" min="10" max="80" id="array-size-range">
         <label for="speed">speed</label>
-        <input type="range" min="6" max="600" id="array-speed-range">
-        <button class="btn">SORT</button>
+        <input type="range" min="1" max="600" id="array-speed-range">
+        <button class="btn btn-sort">SORT</button>
+        <button class="btn btn-select">Select Sort</button>
     </header>
     <svg id="root" class="container" height="400" width="600"></svg>
 </body>

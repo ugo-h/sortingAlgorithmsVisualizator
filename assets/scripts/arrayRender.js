@@ -1,4 +1,7 @@
-function renderArr(arr, multiplyer = 1, color='	#ffdfba') {
+const WIDTH = 600;
+const HEIGHT = 600;
+
+export function renderArr(arr, multiplyer = 1, color='	#ffdfba') {
     root.innerHTML = '';
     const width =  WIDTH/arr.length - 1;
     arr.forEach((size, index) => {
@@ -10,8 +13,8 @@ function renderArr(arr, multiplyer = 1, color='	#ffdfba') {
     });
 };
 
-function generateArr(size) {
-    newArr = [];
+export function generateArr(size) {
+    const newArr = [];
     for (let i = 0; i < size; i++) {
         newArr.push(Math.random()*HEIGHT);
     }

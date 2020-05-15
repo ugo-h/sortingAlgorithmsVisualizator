@@ -1,4 +1,4 @@
-function dataSizeSort(arr, index) {
+export function dataSizeSort(arr, index) {
     return parseInt(arr[index].dataset.size) > parseInt(arr[index+1].dataset.size);
 };
 
@@ -6,7 +6,7 @@ function normalSort(arr, index) {
     return arr[index] > arr[index+1];
 };
 
-function* bubbleSort(arr) {
+export function* bubbleSort(arr) {
     let index;
     let isSwapped;
     let counter = 0;
@@ -24,28 +24,28 @@ function* bubbleSort(arr) {
             };
             index++;
            
-            yield [index, isSwapped, lastElementIndex];
+            yield [arr, index, index-1, index+1 ,lastElementIndex];
             if(index === arr.length-1*counter) {
                 lastElementIndex = index;
             };
         }; 
         
         if (!isSwapped) {
-            for(let i = 0; i < counter; i++) {
-                arr[i].lastChild.setAttribute('style', 'fill: #bae1ff');//blue
-            }
+            // for(let i = 0; i < counter; i++) {
+            //     arr[i].lastChild.setAttribute('style', 'fill: #5cb85c');//blue
+            // }
             return arr
         };
     };
 };
 
-function visualizeSwap(arr, index) {
+export function visualizeSwap(arr, index) {
     const temp = arr[index].getAttribute('transform');
     arr[index].setAttribute('transform', arr[index+1].getAttribute('transform'));
     arr[index+1].setAttribute('transform', temp);
 };
 
-function swap(arr, index) {
+export function swap(arr, index) {
             visualizeSwap(arr, index);
             const temp = arr[index];
             arr[index] = arr[index+1];
