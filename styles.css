@@ -9,17 +9,34 @@ body{
     align-items: center;
 }
 .container{
-  
-    margin: auto;
+    
+    margin: 0 auto;
    
 }
-.element{
-    width: 2rem;
-    background: orchid;
+
+input{
+    margin-left: 0.5rem;
+    margin-right: 3rem;
 }
-.colored-current{
-    background:red;
+header{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+    width:100%;
+    padding: 3rem;
+    background: 	#5bc0de;
 }
-.colored-next{
-    background:blue;
+
+.btn{
+    font-weight: 700;
+    padding:0.5rem 1rem;
+    color:white;
+    background:	#428bca;
+    border: none;
+    border-radius: 10px;
+}
+.btn:not(:disabled):hover{
+    cursor: pointer;
+    background:rgba(0, 0, 0, 0.6);
 }
