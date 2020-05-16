@@ -78,7 +78,7 @@ function sortHandler() {
     selectSortBtn.disabled = true;
     arraySizeRange.disabled = true;
     sortBtn.innerText = 'sorting...'
-    const sortingAlgorithm = sortTypes[currentSort](arrElements);
+    const sortingAlgorithm = sortTypes[currentSort](arrElements, 0, arrElements.length-1);
     const timeout = setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
 }
 
@@ -105,6 +105,9 @@ function sortVisualizer(sortingAlgorithm) {
                 if(done) {
                     clearInterval(finalRunInterval);
                     console.log('done')
+                    arrElements.forEach((el)=>{
+                        console.log(el)
+                    })
                 }
             }, 30 * 10/arrElements.length);
             return;

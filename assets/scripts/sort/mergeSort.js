@@ -1,66 +1,74 @@
-// export function mergeSort(arr) {
-//     return divide(arr);
+const WIDTH = 600;
+let counter = 0;
 
-//     function divide(arr, indexLeft=0, indexRight=arr.length/2) {
-//         if(arr.length <= 1){
-//             return arr;
-//         }
-//         const left = arr.slice(0, Math.round(arr.length/2));
-//         const right = arr.slice(Math.round(arr.length/2), arr.length);
-        
-//         return merge(divide(left, 0), divide(right, arr.length/2), arr.length/2);
-//     };
-    
-//     function merge(left, right, index) {
-//         if(right.length === 0) {
-//             return left;
-//         }
-//         for (let i = 0; i < left.length; i++) {
-//             if(right.length === 0) {
-//                 break
-//             }
-//             if (left[i] > right[0]) {
-//                 console.log(index);
-//                 left.splice(i, 0, right[0]);
-//                 right.splice(0, 1);
-//             }
-//         }
-//         left.push(...right);
-//         return left;
-//     };
-// }
+function setDataComparasing(arr, index1, index2) {
+    return parseInt(arr[index1].dataset.size) < parseInt(arr[index2].dataset.size);
+}
 
-
-export function mergeSort(arr, start, mid, end) {
+function* merge(arr, start, mid, end) {
     const temp = [];
 
     let [ i, j, k ] = [start, mid + 1, 0];
 
-    while( i <= mid && j<= end) {
-        if( arr[i] < arr[j]) {
+    while( i <= mid && j <= end) {//comapring items of two subarrays
+        if(setDataComparasing(arr, i, j)) {
             temp[k] = arr[i];
             k++;
             i++
-        }else{
+            
+        } else { 
             temp[k] = arr[j];
             k++;
             j++
-        }
+        };
+        
+        counter++;
+    };
+    while (i <= mid) {//adding whats left from left subbarray
+        temp[k] = arr[i];
+        k++;
+        i++;
+        counter++;
+    }
+    while (j <= end) {//adding whats left from right subbarray
+        temp[k] = arr[j];
+        k++;
+        j++
+        counter++;
     }
 
+    for(let i = start; i <= end; i++) {
+        visualizeSwapMerge(arr, temp, i, i-start);
+        arr[i] = temp[i-start];
+        counter++;
+        yield [arr, i, i-1];
+    }
+   
+    // return(arr)
 }
-
-
-
-export function visualizeSwapMerge(arr, index, minIndex) {
-    const temp = arr[index].getAttribute('transform');
-    arr[index].setAttribute('transform', arr[minIndex].getAttribute('transform'));
-    arr[minIndex].setAttribute('transform', temp);
+function visualizeSwapMerge(arr1, arrTemp, index1, index2) {
+        const width = WIDTH/arr1.length - 1;
+        console.log(arrTemp[index2].getAttribute('transform'));
+        arr1[index1].setAttribute('transform', `translate(${index1 + index1*width}, 0)`);
+        
 };
 
-// export function swapMerge(arr, index, minIndex) {
-//             visualizeSwapSel(arr, index, minIndex);
-//             const temp = arr[index];
-//             arr[index] = arr[minIndex];
-//             arr[minIndex] = temp;
-// } 
+export function* mergeSort(arr, start, end) {
+    if(start < end) {
+        
+        const mid = Math.floor((start + end)/2);
+        
+        yield* mergeSort(arr, start, mid);
+        
+        yield* mergeSort(arr, mid+1, end);
+        yield* merge(arr, start, mid, end);
+        yield* merge(arr, start, mid, end);
+        
+        // console.log(arr) 
+    }
+    
+}
+// const arr1= [4, 2, 1, 7, 3, 80, 10, 15, 22, 55, 13, 12, 74]
+
+
+// const mg = mergeSort(arr1, 0, arr1.length-1);
