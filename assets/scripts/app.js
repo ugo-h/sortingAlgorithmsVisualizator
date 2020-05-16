@@ -1,5 +1,7 @@
-import { bubbleSort } from './bubbleSort.js';
-import { selectionSort } from './selectionSort.js';
+import { bubbleSort } from './sort/bubbleSort.js';
+import { selectionSort } from './sort/selectionSort.js';
+import { insertionSort } from './sort/insertionSort.js';
+import { mergeSort } from './sort/mergeSort.js';
 import { renderArr, generateArr } from './arrayRender.js';
 import {highlightSorted, renderSortStep } from './render.js'
 
@@ -23,11 +25,15 @@ let currentSort = 'bubble';
 
 const sortTypes = {
     'bubble': bubbleSort,
-    'selection': selectionSort
+    'selection': selectionSort,
+    'insertion': insertionSort,
+    'merge': mergeSort
 };
 
 root.setAttribute('height', HEIGHT);
 root.setAttribute('width', WIDTH);
+
+selectSortBtn.innerText = currentSort + ' sort';
 
 renderArr(arr2);
 let arrElements = [...document.querySelectorAll('g')];
@@ -47,7 +53,7 @@ slideInMenu.addEventListener('click', (event)=> {
     if(event.target.tagName==='LI'){
         console.log('yeah!', event.target)
         currentSort = event.target.id;
-        console.log(currentSort);
+        selectSortBtn.innerText = currentSort + ' sort';
         
         slideInMenu.classList.add('hidden')
         backdrop.classList.add('removed');
@@ -105,6 +111,7 @@ function sortVisualizer(sortingAlgorithm) {
         };
         new Promise((resolve, reject) => {
             setTimeout(()=>{
+                console.log(value)
                 resolve(renderSortStep(...value));
             }, delay*0.6)
             

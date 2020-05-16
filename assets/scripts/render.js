@@ -4,7 +4,7 @@ export function* highlightSorted(arr) {
         yield;
     }
     for(const element of arr) {
-        element.lastChild.setAttribute('style', 'fill: #f1cbff');//basic
+        element.lastChild.setAttribute('style', 'fill: #f1cbff');//highlighted(sorted)
         yield;
     }
 }
@@ -13,10 +13,10 @@ export function renderSortStep(arr, currentIndex, prevIndex, nextIndex, lastElem
     if(arr[prevIndex]) {
         arr[prevIndex].lastChild.setAttribute('style', 'fill: #ffdfba');//main(orange)
     };
-    if(arr[currentIndex].getAttribute('style')!=='fill: blue') {
+    if(arr[currentIndex]) {
         arr[currentIndex].lastChild.setAttribute('style', 'fill: 	#baffc9');//green
     };
-    if(arr[nextIndex] && arr[nextIndex].getAttribute('style')!=='fill: 	#bae1ff') {//blue
+    if(arr[nextIndex]) {
         arr[nextIndex].lastChild.setAttribute('style', 'fill: 	#baffc9');//green
     };
     if(arr[lastElementIndex]) {
