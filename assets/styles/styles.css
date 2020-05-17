@@ -63,6 +63,13 @@ header{
     background: rgba(0, 0, 0, 0.6);
     z-index:1;
 }
+.animated g{
+    transition:transform, 100ms;
+}
+
+/* rect{
+    transition: height, 300ms;
+} */
 /* UTILITY */
 .btn{
     margin: 0 1rem;

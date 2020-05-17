@@ -5,11 +5,10 @@ import { mergeSort } from './sort/mergeSort.js';
 import { renderArr, generateArr } from './arrayRender.js';
 import {highlightSorted, renderSortStep } from './render.js'
 
-const root = document.getElementById('root');
-
 const WIDTH = 600;
 const HEIGHT = 600;
 
+const root = document.getElementById('root');
 const backdrop = document.querySelector('.backdrop');
 const slideInMenu = document.querySelector('.slider-menu')
 const sortBtn = document.querySelector('.btn-sort');
@@ -57,6 +56,12 @@ slideInMenu.addEventListener('click', (event)=> {
         
         slideInMenu.classList.add('hidden')
         backdrop.classList.add('removed');
+
+        if(currentSort === 'merge') {
+            useAdditionalSpace();
+        }else{
+            useNormalSpace();
+        };
     }
 })
 
@@ -66,18 +71,29 @@ function arrSizeHandler(event) {
     const arr = generateArr(volume);
     renderArr(arr);
     arrElements = [...document.querySelectorAll('g')];
+    if(currentSort === 'merge') {
+        useAdditionalSpace();
+    }else{
+        useNormalSpace();
+    };
 }
 
 function sortSpeedHandler(event) {
     const volume = parseInt(event.target.value);
     delay = 602 - volume;
+    if( volume > 300) {
+        root.classList.remove('animated');
+    }else{
+        root.classList.add('animated');
+    }
 }
 
 function sortHandler() {
     sortBtn.disabled = true;
     selectSortBtn.disabled = true;
     arraySizeRange.disabled = true;
-    sortBtn.innerText = 'sorting...'
+    sortBtn.innerText = 'sorting...';
+    
     const sortingAlgorithm = sortTypes[currentSort](arrElements, 0, arrElements.length-1);
     const timeout = setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
 }
@@ -122,4 +138,14 @@ function sortVisualizer(sortingAlgorithm) {
     })
 }
 
+function useAdditionalSpace() {
+    arrElements.forEach((el) => {
+        el.lastChild.setAttribute('height', el.dataset.size/2.5);
+    })
+}
 
+function useNormalSpace() {
+    arrElements.forEach((el) => {
+        el.lastChild.setAttribute('height', el.dataset.size);
+    })
+}

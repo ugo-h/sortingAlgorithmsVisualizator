@@ -1,5 +1,8 @@
 const WIDTH = 600;
 let counter = 0;
+const coordHolder = {}
+
+
 
 function setDataComparasing(arr, index1, index2) {
     return parseInt(arr[index1].dataset.size) < parseInt(arr[index2].dataset.size);
@@ -7,31 +10,41 @@ function setDataComparasing(arr, index1, index2) {
 
 function* merge(arr, start, mid, end) {
     const temp = [];
-
+    const width = Math.trunc(WIDTH/arr.length) - 1;
     let [ i, j, k ] = [start, mid + 1, 0];
 
     while( i <= mid && j <= end) {//comapring items of two subarrays
+        coordHolder[arr[i].getAttribute('transform')] = i;
+        coordHolder[arr[j].getAttribute('transform')] = j;
+        
         if(setDataComparasing(arr, i, j)) {
             temp[k] = arr[i];
+            // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
             k++;
             i++
             
+            
         } else { 
             temp[k] = arr[j];
+            // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
             k++;
             j++
+            
         };
+
         
         counter++;
     };
     while (i <= mid) {//adding whats left from left subbarray
         temp[k] = arr[i];
+        // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
         k++;
         i++;
         counter++;
     }
     while (j <= end) {//adding whats left from right subbarray
         temp[k] = arr[j];
+        // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
         k++;
         j++
         counter++;
@@ -44,14 +57,20 @@ function* merge(arr, start, mid, end) {
         yield [arr, i, i-1];
     }
    
+    console.log(coordHolder);
     // return(arr)
 }
 function visualizeSwapMerge(arr1, arrTemp, index1, index2) {
-        const width = WIDTH/arr1.length - 1;
-        console.log(arrTemp[index2].getAttribute('transform'));
-        arr1[index1].setAttribute('transform', `translate(${index1 + index1*width}, 0)`);
+    console.log('mainArr', arr1[index1].getAttribute('transform'));
+    console.log('tmpArr', arrTemp[index2].getAttribute('transform'));
+
+    const width = Math.trunc(WIDTH/arr1.length) - 1;
+    console.log(index1, coordHolder[`translate(${index1 + index1*width}, 0)`]);
+    arr1[index1].setAttribute('transform', `translate(${index1 + index1*width}, 0)`);
         
 };
+
+
 
 export function* mergeSort(arr, start, end) {
     if(start < end) {
