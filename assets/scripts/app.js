@@ -82,7 +82,9 @@ function sortSpeedHandler(event) {
     const volume = parseInt(event.target.value);
     delay = 602 - volume;
     if( volume > 300) {
-        root.classList.remove('animated');
+        if(currentSort!='merge'){
+            root.classList.remove('animated');
+        }
     }else{
         root.classList.add('animated');
     }
@@ -121,9 +123,6 @@ function sortVisualizer(sortingAlgorithm) {
                 if(done) {
                     clearInterval(finalRunInterval);
                     console.log('done')
-                    arrElements.forEach((el)=>{
-                        console.log(el)
-                    })
                 }
             }, 30 * 10/arrElements.length);
             return;

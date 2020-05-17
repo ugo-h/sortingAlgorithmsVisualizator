@@ -7,6 +7,10 @@ export function* highlightSorted(arr) {
         element.lastChild.setAttribute('style', 'fill: #f1cbff');//highlighted(sorted)
         yield;
     }
+    for(const element of arr) {
+        element.lastChild.setAttribute('style', 'fill: #ffdfba');//main(sorted)
+        yield;
+    }
 }
 
 export function renderSortStep(arr, currentIndex, prevIndex, nextIndex, lastElementIndex) {
