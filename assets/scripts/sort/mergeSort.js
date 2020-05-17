@@ -1,4 +1,6 @@
 const WIDTH = 600;
+const HEIGHT = 600;
+
 let counter = 0;
 const coordHolder = {}
 
@@ -19,14 +21,16 @@ function* merge(arr, start, mid, end) {
         
         if(setDataComparasing(arr, i, j)) {
             temp[k] = arr[i];
-            // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
+            temp[k].setAttribute('transform', `translate(${(k + k*width)}, ${HEIGHT/2.3})`);
+            yield [temp, k, k-1];
             k++;
             i++
             
             
         } else { 
             temp[k] = arr[j];
-            // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
+            temp[k].setAttribute('transform', `translate(${(k + k*width)}, ${HEIGHT/2.3})`);
+            yield [temp, k, k-1];
             k++;
             j++
             
@@ -37,27 +41,27 @@ function* merge(arr, start, mid, end) {
     };
     while (i <= mid) {//adding whats left from left subbarray
         temp[k] = arr[i];
-        // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
+        temp[k].setAttribute('transform', `translate(${(k + k*width)}, ${HEIGHT/2.3})`);
+        yield [temp, k, k-1];
         k++;
         i++;
         counter++;
     }
     while (j <= end) {//adding whats left from right subbarray
         temp[k] = arr[j];
-        // temp[k].setAttribute('transform', `translate(${k + k*width}, 0)`);
+        temp[k].setAttribute('transform', `translate(${(k + k*width)}, ${HEIGHT/2.3})`);
+        yield [temp, k, k-1];
         k++;
         j++
         counter++;
     }
 
     for(let i = start; i <= end; i++) {
-        visualizeSwapMerge(arr, temp, i, i-start);
         arr[i] = temp[i-start];
         counter++;
-        yield [arr, i, i-1];
+        visualizeSwapMerge(arr, temp, i, i-start);
+        
     }
-   
-    console.log(coordHolder);
     // return(arr)
 }
 function visualizeSwapMerge(arr1, arrTemp, index1, index2) {
@@ -81,7 +85,7 @@ export function* mergeSort(arr, start, end) {
         
         yield* mergeSort(arr, mid+1, end);
         yield* merge(arr, start, mid, end);
-        yield* merge(arr, start, mid, end);
+        // yield* merge(arr, start, mid, end);
         
         // console.log(arr) 
     }
