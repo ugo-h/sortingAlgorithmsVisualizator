@@ -2,6 +2,7 @@ import { bubbleSort } from './sort/bubbleSort.js';
 import { selectionSort } from './sort/selectionSort.js';
 import { insertionSort } from './sort/insertionSort.js';
 import { mergeSort } from './sort/mergeSort.js';
+import { quickSort } from './sort/quickSort.js';
 import { renderArr, generateArr } from './arrayRender.js';
 import {highlightSorted, renderSortStep } from './render.js'
 
@@ -26,7 +27,8 @@ const sortTypes = {
     'bubble': bubbleSort,
     'selection': selectionSort,
     'insertion': insertionSort,
-    'merge': mergeSort
+    'merge': mergeSort,
+    'quick': quickSort,
 };
 
 root.setAttribute('height', HEIGHT);
@@ -123,6 +125,11 @@ function sortVisualizer(sortingAlgorithm) {
                 if(done) {
                     clearInterval(finalRunInterval);
                     console.log('done')
+                    const tempArr = []
+                    arrElements.forEach((el)=>{
+                        tempArr.push(el.dataset.size)
+                    })
+                    console.log(tempArr);
                 }
             }, 30 * 10/arrElements.length);
             return;
