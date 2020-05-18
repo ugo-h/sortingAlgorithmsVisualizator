@@ -11,11 +11,11 @@ let counter = 0;
     }
     let pivot = arr[end];
     
-    console.log('pivot', pivot);
-    console.log(arr)
-    console.log('subArr', arr.slice(start, end))
+    // console.log('pivot', pivot);
+    // console.log(arr)
+    // console.log('subArr', arr.slice(start, end))
     let [i, j] = [start-1, start];
-
+    arr[end].lastChild.setAttribute('style', 'fill: 	#01cdfe');//sciene
     while (i < end && j < end ) {
         if(dataSizeSort(arr, j, end)) {
            i++; 
@@ -24,14 +24,27 @@ let counter = 0;
            arr[j] = arr[i];
            arr[i] = temp;
         }
+        
+        if(arr[i]){
+            arr[i].lastChild.setAttribute('style', 'fill: 	#ffb3ba');//red
+            
+        }
+        if(arr[i-1]){
+            arr[i-1].lastChild.setAttribute('style', 'fill: #ffdfba');//normal
+            
+        }
+       
         yield [arr, j, j-1];
         j++;
     }
     visualize(arr, i+1, end);
+    arr[end-1].lastChild.setAttribute('style', 'fill: #ffdfba');//normal
     const temp = arr[i+1]
     arr[i+1] = arr[end];
     arr[end] = temp;
-    console.log(i+1);
+    arr[i+1].lastChild.setAttribute('style', 'fill: #ffdfba');//normal
+    
+    // console.log(i+1);
     yield* quickSort(arr, start, i);
     yield* quickSort(arr, i+2, end);
     return arr;
