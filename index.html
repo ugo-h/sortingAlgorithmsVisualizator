@@ -20,12 +20,12 @@
         </ul>
     </div>
     <header>
-        <label for="size">size</label>
+        <label for="size" id="size-label">size</label>
         <input type="range" min="10" max="80" value="30" id="array-size-range">
         <label for="speed">speed</label>
         <input type="range" min="1" max="600" id="array-speed-range">
-        <button class="btn btn-sort">SORT</button>
-        <button class="btn btn-select"></button>
+        <button class="btn btn-sort" disabled>SORT</button>
+        <button class="btn btn-select">select an algorithm</button>
     </header>
     <svg id="root" class="container animated" height="400" width="600"></svg>
 </body>

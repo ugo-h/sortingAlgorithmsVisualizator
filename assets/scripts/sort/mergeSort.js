@@ -1,5 +1,4 @@
-const WIDTH = 600;
-const HEIGHT = 600;
+import {HEIGHT, WIDTH} from '../arrayRender.js';
 
 let counter = 0;
 let globalLastElement;

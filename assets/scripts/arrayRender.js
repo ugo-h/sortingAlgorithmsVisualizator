@@ -1,6 +1,14 @@
-const WIDTH = 600;
-const HEIGHT = 600;
-
+export let WIDTH = 600;
+export let HEIGHT = 600;
+if(window.innerHeight < 900) {
+    HEIGHT = HEIGHT/2;
+}
+if(window.innerWidth < 800) {
+    WIDTH = WIDTH/2;
+    if(window.innerHeight < 1000) {
+        HEIGHT = HEIGHT/2;
+    }
+}
 export function renderArr(arr, multiplyer = 1, color='	#ffdfba') {
     root.innerHTML = '';
     const width =  WIDTH/arr.length - 1;
