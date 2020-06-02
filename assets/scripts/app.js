@@ -1,26 +1,22 @@
+import { sortVisualizer, useAdditionalSpace, useNormalSpace } from './sortVisualizer.js';
 import { bubbleSort } from './sort/bubbleSort.js';
 import { selectionSort } from './sort/selectionSort.js';
 import { insertionSort } from './sort/insertionSort.js';
 import { mergeSort } from './sort/mergeSort.js';
 import { quickSort } from './sort/quickSort.js';
 import { renderArr, generateArr, HEIGHT, WIDTH} from './arrayRender.js';
-import {highlightSorted, renderSortStep } from './render.js'
+
 
 
 const root = document.getElementById('root');
 const backdrop = document.querySelector('.backdrop');
-const slideInMenu = document.querySelector('.slider-menu')
+const selectSortMenu = document.querySelector('.slider-menu')
 const sortBtn = document.querySelector('.btn-sort');
 const selectSortBtn = document.querySelector('.btn-select');
 const arraySizeRange = document.getElementById('array-size-range');
 const arraySpeedRange = document.getElementById('array-speed-range');
 
-const arr1 = [2, 10, 7, 3, 1, 6, 20, 12, 13, 11, 5];
 const arr2 = generateArr(30);
-
-let delay = 200;
-let currentSort = 'bubble';
-
 const sortTypes = {
     'bubble': bubbleSort,
     'selection': selectionSort,
@@ -29,53 +25,58 @@ const sortTypes = {
     'quick': quickSort,
 };
 
+let delay = 300;
+let currentSort = 'bubble';
+let arrElements = [...document.querySelectorAll('g')];
+
 root.setAttribute('height', HEIGHT);
 root.setAttribute('width', WIDTH);
 
-
-
 renderArr(arr2);
-let arrElements = [...document.querySelectorAll('g')];
 
 sortBtn.addEventListener('click', sortHandler);
 arraySizeRange.addEventListener('input', arrSizeHandler);
 arraySpeedRange.addEventListener('input', sortSpeedHandler);
-selectSortBtn.addEventListener('click', ()=> {
-    slideInMenu.style.display = 'block';
-    setTimeout(()=>{
-        slideInMenu.classList.toggle('hidden')
-        backdrop.classList.toggle('removed');
-    }, 100)
-});
-backdrop.addEventListener('click', ()=>{
-    slideInMenu.classList.toggle('hidden')
-    backdrop.classList.toggle('removed');
+selectSortMenu.addEventListener('click', selectSortMenuHandler);
+
+selectSortBtn.addEventListener('click', selectSortMenuOpenHandler);
+backdrop.addEventListener('click', selectSortMenuCloseHandler)
+
+function selectSortMenuCloseHandler() {
+    return selectSortMenuClose();
+};
+
+function selectSortMenuClose() {
+    selectSortMenu.classList.add('hidden')
+    backdrop.classList.add('removed');
     setTimeout(() => {
-        slideInMenu.style.display = 'none'
+        selectSortMenu.style.display = 'none'
     }, 300);
-})
-slideInMenu.addEventListener('click', (event)=> {
-    if(event.target.tagName==='LI'){
-        console.log('yeah!', event.target)
+};
+
+function selectSortMenuOpenHandler() {
+    selectSortMenu.style.display = 'block';
+    setTimeout(()=>{//for fluidity
+        selectSortMenu.classList.remove('hidden')
+        backdrop.classList.remove('removed');
+    }, 100)
+};
+
+function selectSortMenuHandler(event) {
+    if(event.target.classList.contains('select-sort-btn')) {
         currentSort = event.target.id;
         selectSortBtn.innerText = currentSort + ' sort';
         sortBtn.disabled = false;
-        
-        slideInMenu.classList.add('hidden')
-        backdrop.classList.add('removed');
-        setTimeout(() => {
-            slideInMenu.style.display = 'none'
-        },300);
 
+        selectSortMenuClose();
+        //for merge sort we need additional space, so it will be reflected in animation
         if(currentSort === 'merge') {
             useAdditionalSpace();
         }else{
             useNormalSpace();
         };
     }
-})
-
-
+}
 function arrSizeHandler(event) {
     const volume = parseInt(event.target.value);
     const arr = generateArr(volume);
@@ -92,7 +93,9 @@ function sortSpeedHandler(event) {
     const volume = parseInt(event.target.value);
     delay = 602 - volume;
     if( volume > 300) {
-        if(currentSort!='merge'){
+        //if speed is too high, it is hard to notice animation, 
+        //so it not only becomes pointless, but also distracts user
+        if(currentSort!='merge'){//merge sort looks better with animation even at high speed
             root.classList.remove('animated');
         }
     }else{
@@ -100,86 +103,48 @@ function sortSpeedHandler(event) {
     }
 }
 
-function sortHandler() {
-    if(WIDTH <= 300){
-        setTimeout(()=>{
-            sortBtn.classList.add('removed');
-            selectSortBtn.classList.add('removed');
-            arraySizeRange.classList.add('removed');
-            document.getElementById('size-label').classList.add('removed');
-            document.querySelector('header').style.height = '150px';
-        }, 100)
-       
+function disableSortBtn(bool=true) {
+    if(typeof bool !== "boolean") {
+        throw new Error('Argument must be boolean')
     }
-    sortBtn.disabled = true;
-    selectSortBtn.disabled = true;
-    arraySizeRange.disabled = true;
-    sortBtn.innerText = 'sorting...';
+    sortBtn.disabled = bool;
+    selectSortBtn.disabled = bool;
+    arraySizeRange.disabled = bool;
+    if(bool) {
+        sortBtn.innerText = 'sorting...';
+    } else{
+        sortBtn.innerText = 'SORT';
+    };
+};
+
+function adjustToScreenSize(callback) {
+    if(WIDTH <= 300){//for small screens we transform header menu
+        callback()
+    }
+}
+
+function toggleDisabledBtns() {
+    setTimeout(()=>{//and add pretty animations to it when sorting starts
+        const header = document.querySelector('header')
+        sortBtn.classList.toggle('removed');
+        selectSortBtn.classList.toggle('removed');
+        arraySizeRange.classList.toggle('removed');
+        document.getElementById('size-label').classList.toggle('removed');
+
+        if(sortBtn.classList.contains('removed')) {
+            header.style.height = '150px';
+        } else {
+            header.style.height = '300px';
+        }
+    }, 100)
+};
+
+function sortHandler() {
+    adjustToScreenSize(toggleDisabledBtns);
+    disableSortBtn(true);
     
     const sortingAlgorithm = sortTypes[currentSort](arrElements, 0, arrElements.length-1);
     const timeout = setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
 }
 
-function sortVisualizer(sortingAlgorithm) {
-    return new Promise((resolve, reject)=>{
-        setTimeout(()=>{
-            resolve(sortingAlgorithm.next())
-        }, delay*0.2)
-    })
-    .then((data)=>{
-        const {value, done} = data;
-        console.log(done)
-        if(!done) {
-            setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
-            
-        }else{
-            if(WIDTH <= 300){
-                setTimeout(()=>{
-                    sortBtn.classList.remove('removed');
-                    selectSortBtn.classList.remove('removed');
-                    arraySizeRange.classList.remove('removed');
-                    document.getElementById('size-label').classList.remove('removed');
-                    document.querySelector('header').style.height = '300px';
-                }, 1300);
-               
-            }
-            sortBtn.innerText = 'SORT';
-            sortBtn.disabled = false;
-            arraySizeRange.disabled = false;
-            selectSortBtn.disabled = false;
-            const  finalRun = highlightSorted(arrElements);
-            const finalRunInterval = setInterval(()=>{
-                const {done} =  finalRun.next();
-                if(done) {
-                    clearInterval(finalRunInterval);
-                    console.log('done')
-                    const tempArr = []
-                    arrElements.forEach((el)=>{
-                        tempArr.push(el.dataset.size)
-                    })
-                    console.log(tempArr);
-                }
-            }, 30 * 10/arrElements.length);
-            return;
-        };
-        new Promise((resolve, reject) => {
-            setTimeout(()=>{
-                console.log(value)
-                resolve(renderSortStep(...value));
-            }, delay*0.6)
-            
-        }).then(()=> {return});
-    })
-}
 
-function useAdditionalSpace() {
-    arrElements.forEach((el) => {
-        el.lastChild.setAttribute('height', el.dataset.size/2.5);
-    })
-}
-
-function useNormalSpace() {
-    arrElements.forEach((el) => {
-        el.lastChild.setAttribute('height', el.dataset.size);
-    })
-}
