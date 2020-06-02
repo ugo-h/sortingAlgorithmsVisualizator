@@ -21,7 +21,7 @@ export const Dom = {
             if(document.getElementById('size-label').classList.contains('removed')) {
                 header.style.height = '150px';
             } else {
-                header.style.height = '300px';
+                header.style.height = '';
             }
     },
 

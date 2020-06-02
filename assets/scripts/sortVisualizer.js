@@ -4,39 +4,26 @@ import { Dom } from './utils/DomHelper.js';
 
 export let delay = 300;
 
-export function sortVisualizer(sortingAlgorithm, arr) {
+export function sortVisualizer(sortingAlgorithm) {
     return new Promise((resolve, reject)=>{
         setTimeout(()=>{
             resolve(sortingAlgorithm.next())
         }, delay*0.2)
     })
-    .then((data)=>{
+    .then((data) => {
         const { value, done } = data;
         console.log(done)
         if(!done) {
-            setTimeout(sortVisualizer.bind(null, sortingAlgorithm, arr), delay);
+            setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
             
         }else{
-            if(WIDTH <= 300){
+            Dom.disableSortBtn(false);
+            highlightSorted(arrElements);
+            adjustToScreenSize(() => {
                 setTimeout(()=>{
-                    Dom.toggleDisabledBtns()
-                }, 1300);
-               
-            }
-           Dom.disableSortBtn(false);
-            const  finalRun = highlightSorted(arr);
-            const finalRunInterval = setInterval(()=>{
-                const {done} =  finalRun.next();
-                if(done) {
-                    clearInterval(finalRunInterval);
-                    console.log('done')
-                    const tempArr = []
-                    arr.forEach((el)=>{
-                        tempArr.push(el.dataset.size)
-                    })
-                    console.log(tempArr);
-                }
-            }, 30 * 10/arr.length);
+                    Dom.toggleDisabledBtns();
+                }, 1300)
+            });
             return;
         };
         new Promise((resolve, reject) => {
@@ -45,7 +32,9 @@ export function sortVisualizer(sortingAlgorithm, arr) {
                 resolve(renderSortStep(...value));
             }, delay*0.6)
             
-        }).then(()=> {return});
+        }).then(()=> {
+            return
+        });
     })
 }
 
