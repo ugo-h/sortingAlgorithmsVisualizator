@@ -1,6 +1,4 @@
-export function dataSizeSort(arr, index) {
-    return parseInt(arr[index].dataset.size) > parseInt(arr[index+1].dataset.size);
-};
+import { sortByDataSize } from './helperFunctions.js';
 
 function normalSort(arr, index) {
     return arr[index] > arr[index+1];
@@ -16,7 +14,7 @@ export function* bubbleSort(arr) {
         index = 0;
         counter++;
         while(index < arr.length-1*counter) {
-            if(dataSizeSort(arr, index)) {
+            if(sortByDataSize(arr, index+1, index)) {
                 arr[index+1].lastChild.setAttribute('style', 'fill: 	#ffb3ba');//red
                 arr[index].lastChild.setAttribute('style', 'fill: 	#ffb3ba');//red
                 swap(arr, index);

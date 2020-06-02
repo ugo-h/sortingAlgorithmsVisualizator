@@ -1,7 +1,11 @@
-export function promisifyWithDelay(func, delay) {
-    new Promise((resolve, reject) => {
+export function promisifyIteratorWithDelay(func, delay, iterator=true) {
+    return new Promise((resolve, reject) => {
         setTimeout(() => {
-            resolve(func);
+            if(iterator) {
+                resolve(func.next());
+            } else {
+                resolve(func());
+            }
         }, delay);
     });
 }

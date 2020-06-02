@@ -4,10 +4,10 @@ import { selectionSort } from './sort/selectionSort.js';
 import { insertionSort } from './sort/insertionSort.js';
 import { mergeSort } from './sort/mergeSort.js';
 import { quickSort } from './sort/quickSort.js';
-import {renderHighlightSorted, renderSortStep } from './renderVisuals.js';
+import { renderHighlightSorted, renderSortStep } from './renderVisuals.js';
 import { renderArr, generateArr, HEIGHT, WIDTH} from './renderArray.js';
 import { Dom } from './utils/DomHelper.js';
-import { promisifyWithDelay } from './utils/utils.js';
+import { promisifyIteratorWithDelay } from './utils/utils.js';
 
 const arr2 = generateArr(30);
 const sortingAlgorithms = {
@@ -33,21 +33,54 @@ Dom.arraySpeedRange.addEventListener('input', sortSpeedHandler);
 Dom.selectSortMenu.addEventListener('click', selectSortMenuHandler);
 
 Dom.selectSortBtn.addEventListener('click', selectSortMenuOpenHandler);
-Dom.backdrop.addEventListener('click', selectSortMenuCloseHandler)
+Dom.backdrop.addEventListener('click', selectSortMenuCloseHandler);
 
 function sortHandler() {
     adjustToScreenSize(Dom.toggleDisabledBtns.bind(Dom));
     Dom.disableSortBtn(true);
     
     const sortingAlgorithm = sortingAlgorithms[currentSort](arrElements, 0, arrElements.length-1);
-    const timeout = setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
-}
+    const timeout = setTimeout(visualieIteration.bind(null, sortingAlgorithm, arrElements), delay);
+};
+
+async function visualieIteration(sortingAlgorithm, arr) {
+    //one iteration of sortingAlgorithm delayed (red color)
+        const { 
+            value, 
+            done 
+        } = await promisifyIteratorWithDelay(sortingAlgorithm, delay*0.2);
+    
+        if(done) {
+            Dom.disableSortBtn(false);
+            await highlightSorted(arr);
+            adjustToScreenSize(Dom.toggleDisabledBtns.bind(Dom));
+            return; 
+        } else{
+    //one step highlights the current element (green color), 
+    //which algorithm is working with
+            await promisifyIteratorWithDelay(renderSortStep.bind(null, ...value), delay*0.6, false);
+            setTimeout(visualieIteration.bind(null, sortingAlgorithm, arr), delay);
+        };
+    };
+    
+    function highlightSorted(arr) {
+        return new Promise((resolve, reject) => {
+            const  finalRun = renderHighlightSorted(arr);
+            const finalRunInterval = setInterval(()=>{
+                const { done } =  finalRun.next();
+                if(done) {
+                    clearInterval(finalRunInterval);
+                    resolve();
+                }
+            }, 30 * 10/arr.length);
+        });
+    };
 
 function adjustToScreenSize(callback) {
     if(WIDTH <= 300){//for small screens we transform header menu
         callback()
-    }
-}
+    };
+};
 
 function arrSizeHandler(event) {
     const volume = parseInt(event.target.value);
@@ -59,7 +92,7 @@ function arrSizeHandler(event) {
     }else{
         useNormalSpace(arrElements);
     };
-}
+};
 
 function sortSpeedHandler(event) {
     const volume = parseInt(event.target.value);
@@ -72,8 +105,8 @@ function sortSpeedHandler(event) {
         }
     }else{
         Dom.root.classList.add('animated');
-    }
-}
+    };
+};
 
 function selectSortMenuHandler(event) {
     if(event.target.classList.contains('select-sort-btn')) {
@@ -88,8 +121,8 @@ function selectSortMenuHandler(event) {
         }else{
             useNormalSpace(arrElements);
         };
-    }
-}
+    };
+};
 
 function selectSortMenuCloseHandler() {
     return Dom.selectSortMenuClose();
@@ -99,62 +132,16 @@ function selectSortMenuOpenHandler() {
     return Dom.selectSortMenuOpen();
 };
 
-async function sortVisualizer(sortingAlgorithm) {
-    const data = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve(sortingAlgorithm.next());
-        }, delay*0.2);
-    });
-    const { value, done } = data;
-    if(done) {
-        Dom.disableSortBtn(false);
-        highlightSorted(arrElements);
-        adjustToScreenSize(() => {
-            setTimeout(()=>{
-                Dom.toggleDisabledBtns();
-            }, 1300)
-        });
-        
-        
-        return; 
-    } else{
-        await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                // console.log(value)
-                resolve(renderSortStep(...value));
-            }, delay*0.6);
-        });
-        setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
-    }
-}
-
-function highlightSorted(arr) {
-    const  finalRun = renderHighlightSorted(arr);
-    const finalRunInterval = setInterval(()=>{
-        const {done} =  finalRun.next();
-        if(done) {
-            clearInterval(finalRunInterval);
-            console.log('done')
-            const tempArr = []
-            arr.forEach((el)=>{
-                tempArr.push(el.dataset.size)
-            })
-            console.log(tempArr);
-        }
-    }, 30 * 10/arr.length);
-    return
-}
-
 function useAdditionalSpace(arr) {
     arr.forEach((el) => {
         el.lastChild.setAttribute('height', el.dataset.size/2.5);
-    })
-}
+    });
+};
 function useNormalSpace(arr) {
     arr.forEach((el) => {
         el.lastChild.setAttribute('height', el.dataset.size);
-    })
-}
+    });
+};
 
 
 

@@ -1,4 +1,4 @@
-import {dataSizeSort} from './utils.js'
+import { sortByDataSize } from './helperFunctions.js'
 
 let counter = 0;
 // arr[j] <= pivot
@@ -17,7 +17,7 @@ let counter = 0;
     let [i, j] = [start-1, start];
     arr[end].lastChild.setAttribute('style', 'fill: 	#01cdfe');//sciene
     while (i < end && j < end ) {
-        if(dataSizeSort(arr, j, end)) {
+        if(sortByDataSize(arr, j, end)) {
            i++; 
            visualize(arr, i, j);
            const temp = arr[j]
