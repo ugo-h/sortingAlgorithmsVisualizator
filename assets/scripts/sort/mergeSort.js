@@ -1,4 +1,4 @@
-import {HEIGHT, WIDTH} from '../arrayRender.js';
+import {HEIGHT, WIDTH} from '../renderArray.js';
 
 let counter = 0;
 let globalLastElement;

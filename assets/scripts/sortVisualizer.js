@@ -1,5 +1,5 @@
-import {highlightSorted, renderSortStep } from './render.js'
-import { WIDTH} from './arrayRender.js';
+import {highlightSorted, renderSortStep } from './renderVisuals.js'
+import { WIDTH} from './renderArray.js';
 import { Dom } from './utils/DomHelper.js';
 
 export let delay = 300;

@@ -4,8 +4,8 @@ import { selectionSort } from './sort/selectionSort.js';
 import { insertionSort } from './sort/insertionSort.js';
 import { mergeSort } from './sort/mergeSort.js';
 import { quickSort } from './sort/quickSort.js';
-import {highlightSorted, renderSortStep } from './render.js';
-import { renderArr, generateArr, HEIGHT, WIDTH} from './arrayRender.js';
+import {renderHighlightSorted, renderSortStep } from './renderVisuals.js';
+import { renderArr, generateArr, HEIGHT, WIDTH} from './renderArray.js';
 import { Dom } from './utils/DomHelper.js';
 
 const arr2 = generateArr(30);
@@ -17,14 +17,14 @@ const sortingAlgorithms = {
     'quick': quickSort,
 };
 
+// renderArr(arr2);
+
 let delay = 300;
 let currentSort = 'bubble';
-let arrElements = [...document.querySelectorAll('g')];
+let arrElements = renderArr(arr2);
 
 Dom.root.setAttribute('height', HEIGHT);
 Dom.root.setAttribute('width', WIDTH);
-
-renderArr(arr2);
 
 Dom.sortBtn.addEventListener('click', sortHandler);
 Dom.arraySizeRange.addEventListener('input', arrSizeHandler);
@@ -51,8 +51,8 @@ function adjustToScreenSize(callback) {
 function arrSizeHandler(event) {
     const volume = parseInt(event.target.value);
     const arr = generateArr(volume);
-    renderArr(arr);
-    arrElements = [...document.querySelectorAll('g')];
+
+    arrElements = renderArr(arr);
     if(currentSort === 'merge') {
         useAdditionalSpace(arrElements);
     }else{
@@ -98,16 +98,13 @@ function selectSortMenuOpenHandler() {
     return Dom.selectSortMenuOpen();
 };
 
-
-
-
 function sortVisualizer(sortingAlgorithm) {
     return new Promise((resolve, reject)=>{
         setTimeout(()=>{
             resolve(sortingAlgorithm.next())
         }, delay*0.2)
     })
-    .then((data)=>{
+    .then((data) => {
         const { value, done } = data;
         console.log(done)
         if(!done) {
@@ -120,20 +117,8 @@ function sortVisualizer(sortingAlgorithm) {
                 }, 1300);
                
             }
-           Dom.disableSortBtn(false);
-            const  finalRun = highlightSorted(arrElements);
-            const finalRunInterval = setInterval(()=>{
-                const {done} =  finalRun.next();
-                if(done) {
-                    clearInterval(finalRunInterval);
-                    console.log('done')
-                    const tempArr = []
-                    arrElements.forEach((el)=>{
-                        tempArr.push(el.dataset.size)
-                    })
-                    console.log(tempArr);
-                }
-            }, 30 * 10/arrElements.length);
+            Dom.disableSortBtn(false);
+            highlightSorted(arrElements);
             return;
         };
         new Promise((resolve, reject) => {
@@ -144,6 +129,23 @@ function sortVisualizer(sortingAlgorithm) {
             
         }).then(()=> {return});
     })
+}
+
+function highlightSorted(arr) {
+    const  finalRun = renderHighlightSorted(arr);
+    const finalRunInterval = setInterval(()=>{
+        const {done} =  finalRun.next();
+        if(done) {
+            clearInterval(finalRunInterval);
+            console.log('done')
+            const tempArr = []
+            arr.forEach((el)=>{
+                tempArr.push(el.dataset.size)
+            })
+            console.log(tempArr);
+        }
+    }, 30 * 10/arr.length);
+    return
 }
 
 function useAdditionalSpace(arr) {
