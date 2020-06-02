@@ -1,7 +1,10 @@
 import {highlightSorted, renderSortStep } from './render.js'
+import { WIDTH} from './arrayRender.js';
+import { Dom } from './utils/DomHelper.js';
 
+export let delay = 300;
 
-export function sortVisualizer(sortingAlgorithm) {
+export function sortVisualizer(sortingAlgorithm, arr) {
     return new Promise((resolve, reject)=>{
         setTimeout(()=>{
             resolve(sortingAlgorithm.next())
@@ -11,33 +14,29 @@ export function sortVisualizer(sortingAlgorithm) {
         const { value, done } = data;
         console.log(done)
         if(!done) {
-            setTimeout(sortVisualizer.bind(null, sortingAlgorithm), delay);
+            setTimeout(sortVisualizer.bind(null, sortingAlgorithm, arr), delay);
             
         }else{
             if(WIDTH <= 300){
                 setTimeout(()=>{
-                    sortBtn.classList.remove('removed');
-                    selectSortBtn.classList.remove('removed');
-                    arraySizeRange.classList.remove('removed');
-                    document.getElementById('size-label').classList.remove('removed');
-                    document.querySelector('header').style.height = '300px';
+                    Dom.toggleDisabledBtns()
                 }, 1300);
                
             }
-           disableSortBtn(false);
-            const  finalRun = highlightSorted(arrElements);
+           Dom.disableSortBtn(false);
+            const  finalRun = highlightSorted(arr);
             const finalRunInterval = setInterval(()=>{
                 const {done} =  finalRun.next();
                 if(done) {
                     clearInterval(finalRunInterval);
                     console.log('done')
                     const tempArr = []
-                    arrElements.forEach((el)=>{
+                    arr.forEach((el)=>{
                         tempArr.push(el.dataset.size)
                     })
                     console.log(tempArr);
                 }
-            }, 30 * 10/arrElements.length);
+            }, 30 * 10/arr.length);
             return;
         };
         new Promise((resolve, reject) => {
@@ -50,14 +49,14 @@ export function sortVisualizer(sortingAlgorithm) {
     })
 }
 
-export function useAdditionalSpace() {
-    arrElements.forEach((el) => {
+export function useAdditionalSpace(arr) {
+    arr.forEach((el) => {
         el.lastChild.setAttribute('height', el.dataset.size/2.5);
     })
 }
 
-export function useNormalSpace() {
-    arrElements.forEach((el) => {
+export function useNormalSpace(arr) {
+    arr.forEach((el) => {
         el.lastChild.setAttribute('height', el.dataset.size);
     })
 }
