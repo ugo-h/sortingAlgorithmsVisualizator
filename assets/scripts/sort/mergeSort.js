@@ -1,11 +1,8 @@
-import {HEIGHT, WIDTH} from '../arrayRender.js';
+import {HEIGHT, WIDTH} from '../renderArray.js';
+import { sortByDataSize } from './helperFunctions.js';
 
 let counter = 0;
 let globalLastElement;
-
-function setDataComparasing(arr, index1, index2) {
-    return parseInt(arr[index1].dataset.size) < parseInt(arr[index2].dataset.size);
-}
 
 function* merge(arr, start, mid, end) {
     const temp = [];
@@ -13,7 +10,7 @@ function* merge(arr, start, mid, end) {
     let [ i, j, k ] = [start, mid + 1, 0];
 
     while( i <= mid && j <= end) {//comapring items of two subarrays
-        if(setDataComparasing(arr, i, j)) {
+        if(sortByDataSize(arr, i, j)) {
             temp[k] = arr[i];
             temp[k].setAttribute('transform', `translate(${(k + k*width)}, ${HEIGHT/2.3})`);
             yield [temp, k, k-1,];

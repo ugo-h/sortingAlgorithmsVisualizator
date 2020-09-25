@@ -1,6 +1,5 @@
-export function dataSizeSortSel(arr, index, minIndex) {
-    return parseInt(arr[index].dataset.size) < parseInt(arr[minIndex].dataset.size);
-};
+import { sortByDataSize } from './helperFunctions.js';
+
 
 export function* selectionSort(arr) {
     console.log('selection sort started!')
@@ -9,7 +8,7 @@ export function* selectionSort(arr) {
         
         let minIndex = i
         for (let j = i+1; j < arr.length; j++) {
-            if(dataSizeSortSel(arr, j, minIndex)) {
+            if(sortByDataSize(arr, j, minIndex)) {
                 arr[minIndex].lastChild.setAttribute('style', 'fill: 	#ffdfba');//basic
                 minIndex = j;
             };

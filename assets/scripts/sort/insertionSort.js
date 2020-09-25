@@ -1,6 +1,4 @@
-function dataSizeSort(arr, index1, index2) {
-    return parseInt(arr[index1].dataset.size) < parseInt(arr[index2].dataset.size);
-};
+import { sortByDataSize } from './helperFunctions.js'; 
 
 function normalSort(arr, index1, index2) {
     return arr[index1] < arr[index2];
@@ -13,10 +11,10 @@ export function* insertionSort(arr) {
         if(arr[i-1]) {
             arr[i-1].lastChild.setAttribute('style', 'fill:#ffdfba');//red 
         }
-        if(dataSizeSort(arr, i+1, i)){
+        if(sortByDataSize(arr, i+1, i)){
             for(let j = 0; j <= i; j++) {
                 counter++;
-                if (dataSizeSort(arr, i+1, j)) {
+                if (sortByDataSize(arr, i+1, j)) {
                     visualizeSwap(arr, i+1, j);
                     const temp = arr[i+1];
                     arr[i+1] = arr[j];

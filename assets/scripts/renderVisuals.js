@@ -1,4 +1,4 @@
-export function* highlightSorted(arr) {
+export function* renderHighlightSorted(arr) {
     for(const element of arr.slice(0, arr.length/2)) {
         element.lastChild.setAttribute('style', 'fill: #5cb85c');//blue
         yield;
