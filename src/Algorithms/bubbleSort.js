@@ -2,47 +2,37 @@ function normalSort(arr, index) {
     return arr[index] > arr[index+1];
 };
 
-export function* bubbleSort(arr) {
-    let index;
-    let isSwapped;
+function sortByDataSize(arr, index) {
+    return arr[index].height < arr[index+1].height;
+}
+
+export function* bubbleSortG(arr) {
     let counter = 0;
-    let lastElementIndex;
-    while(true) {
-        isSwapped = false;
-        index = 0;
-        counter++;
-        while(index < arr.length-1*counter) {
-            if(sortByDataSize(arr, index+1, index)) {
-                arr[index+1].lastChild.setAttribute('style', 'fill: 	#ffb3ba');//red
-                arr[index].lastChild.setAttribute('style', 'fill: 	#ffb3ba');//red
-                swap(arr, index);
-                isSwapped = true;
-            };
-            index++;
-           
-            yield [arr, index, index-1, index+1 ,lastElementIndex];
-            if(index === arr.length-1*counter) {
-                lastElementIndex = index;
-            };
-        }; 
-        
-        if (!isSwapped) {
-            // for(let i = 0; i < counter; i++) {
-            //     arr[i].lastChild.setAttribute('style', 'fill: #5cb85c');//blue
-            // }
-            return arr
-        };
-    };
-};
+    for(let j = 0; j < arr.length-1; j++)  {
+        for(let i = 0; i < arr.length-j-1; i++) {
+            if(arr[arr.length-j]) arr[arr.length-j].color = 'green';
+            let swaped = false;
+            counter++;
+            if(counter> 1000) throw new Error('Overflow')
+            if(sortByDataSize(arr, i))  {
+                yield {index: i, isSwaped: false};
+                yield {index: i, isSwaped: true};
+                visualSwap(arr[i], arr[i+1]);
+                swap(arr, i);
+                swaped = true; 
+            }
+            yield {index: i, isSwaped: swaped};
+        }
+    } 
+}
 
-export function visualizeSwap(arr, index) {
-    const temp = arr[index].getAttribute('transform');
-    arr[index].setAttribute('transform', arr[index+1].getAttribute('transform'));
-    arr[index+1].setAttribute('transform', temp);
-};
+function visualSwap(first, second) {
+    const temp = first.x;
+    first.x = second.x;
+    second.x = temp;
+}
 
-export function swap(arr, index) {
-            visualizeSwap(arr, index);
+function swap(arr, index) {
             const temp = arr[index];
             arr[index] = arr[index+1];
             arr[index+1] = temp;        
